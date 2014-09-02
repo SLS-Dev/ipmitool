@@ -5260,6 +5260,106 @@ static int cx_pmic_main(struct ipmi_intf *intf, int argc, char **argv)
 }
 
 
+
+
+#define CXOEM_RAFT_PARAM_UNKNOWN	0
+#define CXOEM_RAFT_PARAM_LEADER     1
+#define CXOEM_RAFT_N_PARAMS         2
+
+const struct valstr cx_raft_params[] = {
+	{CXOEM_RAFT_PARAM_LEADER,"leader"}
+};
+
+static void cx_raft_usage(void)
+{
+	lprintf(LOG_NOTICE,
+		"\n"
+		"Usage: ipmitool cxoem raft <command>\n"
+		"\n"
+		"PMIC Commands: \n"
+		"\n"
+		"  get leader\n"
+		"\n");
+}
+
+static int cx_raft_get_param(struct ipmi_intf *intf, int cx_raft_param)
+{
+	struct ipmi_rs *rsp;
+	struct ipmi_rq req;
+	uint8_t msg_data[16];
+	int i;
+
+	if (cx_raft_param <= CXOEM_RAFT_PARAM_UNKNOWN
+	    || cx_raft_param > CXOEM_RAFT_N_PARAMS) {
+		lprintf(LOG_ERR,
+			"Unknown RAFT parameter %d", cx_raft_param);
+		return -1;
+	}
+
+	memset(&req, 0, sizeof(req));
+	req.msg.netfn = IPMI_NETFN_OEM_SS;
+	req.msg.cmd = IPMI_CMD_OEM_RAFT_GET_PARAM;
+	req.msg.data = msg_data;
+
+	msg_data[0] = cx_raft_param;
+	req.msg.data_len = 1;
+
+	rsp = intf->sendrecv(intf, &req);
+	if (rsp == NULL) {
+		lprintf(LOG_ERR,
+			"Error getting RAFT parameter %s",
+			val2str(cx_raft_param, cx_raft_params));
+		return -1;
+	}
+	if (rsp->ccode > 0) {
+		lprintf(LOG_ERR,
+			"RAFT get %s failed",
+			val2str(cx_raft_param, cx_raft_params));
+		return -1;
+	}
+
+	switch (cx_raft_param) {
+	case CXOEM_RAFT_PARAM_LEADER:
+		printf("RAFT Leader Node# : %d\n", rsp->data[0]);
+		break;
+	}
+
+	return CXOEM_SUCCESS;
+}
+
+static int cx_raft_main(struct ipmi_intf *intf, int argc, char **argv)
+{
+	int rv = -1;		// Assuming error
+
+	if (argc < 1 || strncmp(argv[0], "help", 4) == 0) {
+		cx_raft_usage();
+		return 0;
+	}
+
+	if (strncmp(argv[0], "get", 3) == 0 && argc == 2) {
+		int param;
+		int ret;
+		int i;
+
+		i = index_of_string(argv[1],
+		                   cx_raft_params,
+		                   ARRAY_SIZE(cx_raft_params),
+		                   0);
+		param = cx_raft_params[i].val;
+		if (param < 0) {
+			cx_raft_usage();
+			return -1;
+		}
+
+		ret = cx_raft_get_param(intf, param);
+		return ret;
+	}
+
+	cx_raft_usage();
+	return -1;
+}
+
+
 int ipmi_cxoem_main(struct ipmi_intf *intf, int argc, char **argv)
 {
 	int rc = 0;
@@ -5281,6 +5381,8 @@ int ipmi_cxoem_main(struct ipmi_intf *intf, int argc, char **argv)
 		rc = cx_feature_main(intf, argc - 1, &argv[1]);
 	} else if (!strncmp(argv[0], "pmic", 4)) {
 		rc = cx_pmic_main(intf, argc - 1, &argv[1]);
+	} else if (!strncmp(argv[0], "raft", 4)) {
+		rc = cx_raft_main(intf, argc - 1, &argv[1]);
 	} else if (!strncmp(argv[0], "logging", 7)) {
 		rc = cx_logging_cmd_parser(intf, cx_logging_main_arg, argc - 1,
 				&argv[1]);

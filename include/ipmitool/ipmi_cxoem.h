@@ -44,6 +44,7 @@
 
 #define IPMI_CMD_OEM_GET_DEVICE_INFO                0x01
 #define IPMI_CMD_OEM_FEATURES_ENABLE                0xD0
+#define IPMI_CMD_OEM_RAFT_GET_PARAM					0xD1
 #define IPMI_CMD_OEM_FW_DOWNLOAD                    0xE0
 #define IPMI_CMD_OEM_FW_GET_STATUS                  0xE1
 #define IPMI_CMD_OEM_FW_SET_STATUS                  0xE2
