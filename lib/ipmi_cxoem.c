@@ -1409,7 +1409,8 @@ cx_fabric_cmd_t get_cmd = {
 	 IPMI_CMD_OEM_FABRIC_PARAMETER_UPLINK_INFO,
 	 IPMI_CMD_OEM_FABRIC_PARAMETER_CHASSIS_SERIAL_NUM,
 	 IPMI_CMD_OEM_FABRIC_PARAMETER_MGMT_VIEW,
-	 IPMI_CMD_OEM_FABRIC_PARAMETER_BCVEC},
+	 IPMI_CMD_OEM_FABRIC_PARAMETER_BCVEC,
+	 IPMI_CMD_OEM_FABRIC_PARAMETER_MASTER},
 	{IPMI_CMD_OEM_FABRIC_SPECIFIER_NODE,
 	 IPMI_CMD_OEM_FABRIC_SPECIFIER_INTERFACE,
 	 IPMI_CMD_OEM_FABRIC_SPECIFIER_LINK,
@@ -2261,6 +2262,15 @@ cx_fabric_spec_t size_spec = {
 	cx_fabric_scalar_printer
 };
 
+cx_fabric_param_t master_param = {
+	"master",
+	IPMI_CMD_OEM_FABRIC_PARAMETER_MASTER,
+	{0, 0, 0, 0, 0}
+	,
+	Cx_Fabric_Arg_Value_Scalar, 2,
+	cx_fabric_scalar_printer
+};
+
 cx_fabric_arg_t cx_fabric_main_arg[] = {
 	{"set_watch", Cx_Fabric_Arg_Command, (void *)&set_watch_cmd},
 	{"clear_watch", Cx_Fabric_Arg_Command, (void *)&clear_watch_cmd},
@@ -2340,6 +2350,7 @@ cx_fabric_arg_t cx_fabric_main_arg[] = {
 	{"profile", Cx_Fabric_Arg_Specifier, (void *)&profile_spec},
 	{"logical", Cx_Fabric_Arg_Specifier, (void *)&logical_spec},
 	{"physical", Cx_Fabric_Arg_Specifier, (void *)&physical_spec},
+	{"master", Cx_Fabric_Arg_Parameter, (void *)&master_param},
 	{NULL, Cx_Fabric_Arg_Invalid, (void *)NULL},
 };
 
