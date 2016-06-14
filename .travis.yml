@@ -1,0 +1,35 @@
+language: c
+os:
+- linux
+complier:
+- gcc
+before_install:
+- sudo apt-get -qq update
+script:
+- "/bin/sh build.sh"
+before_depoly:
+- git config --global user.email "builds@travis-ci.com"
+- git config --global user.name "Travis CI" export VERSION=`grep -r CX_VERSION include/ipmitool/ipmi_cxoem.h
+  | awk '{print $3}' | sed 's/["-]//g'`
+- export GIT_TAG=$VERSION.$TRAVIS_BRANCH.Build$TRAVIS_BUILD_NUMBER
+- echo $GIT_TAG
+- git tag $GIT_TAG -f -a -m "Generated tag from TravisCI for build $TRAVIS_BUILD_NUMBER"
+- git push -f https://$GITPERM@github.com/SLS-Dev/cxmanage --tags
+- export RELEASE_FILE=$(ls release/*.tar.gz)
+- echo "deploying $RELEASE_FILE to Github releases"
+deploy:
+  skip_cleanup: true
+  provider: releases
+  api_key:
+    secure: Rana8Xsr9KbAGlSF2BCI3+ywseVxEM1/IL6CPSuqiU2qwAYWfkMADQR4sRQAHqdh/HWIcNpauRYpARZwt3B5AIc19zoK6pQRIWBJwC1+XsAH+zg9uBa7GiO/GFfUcXWM1JXelq8fTBPq5R52Qkgl/MPPMTMOQ4Mjply9ArLVPFwNr+rYnr5fFaSUuhZTkn0aeYlouJqSbrY5nS75tU3QWJiuLKIa+eT8+uDIsBBCPVSnKrX672lFEg4oxWfqq55hK7l6ctz6UktUeG/pNv0hB9s/ol5HhmD8OIuOxI0n7bKcxS/lETkjZcKpWhPPLsKgxI1oRwibzeCKjUU+flK/nzEpjd70gvMlpETkkRVfW5ad1oYL0K5p3HewXSAam6uly3B5223RnZwNGHuaugGMaIy89eR/5PzL6NS7baHFufU5j2YUuvq0s2TBEYYjahCXN6O4cKRLLMan2WHxWywt9QbN08/yMz+R8R0y+g3WCSIw5rFLrMa4bgFLALMehlFcXsEM71h+HLLkBapP5Q1qE+t/Tz8zBjTuuIpSRBa1RsSUSoNbHiSxehADTXUeYLL4tdu1wtavVKeCweekxsFOaepAiCytdxkL7LU3aiZkqY0mX2fU6fvLodwZPM5wEFpHVs5+iK3uojSj6xAR0Rt3llh8/Os6vklm/QxdfN+jUhs=
+  file_glob: true
+  file: "$RELEASE_FILE"
+  on:
+    tags: false
+    all_branch: true
+branches:
+  except:
+  - "/^v[0-9]/"
+env:
+  global:
+    secure: mHbvlFLHE2e4tYuSUPBrBxtnSk2CWec7rRYmxNbAgTCBz0jxJyfF7OFrxN8lVgPljjak1usslqAZONZjjh6rPDLm146RPkjmUg5uJZCeYF8m5Z8uCjGoPk8Ci+Q6qFTuS6xMngJsIs0sE58kA5FKZkKCw66FZs9QCINJqGyq0grj1qgaydSxtY9LJYnwIq7+dkVjYb/7nKrNinU4CE2Gz5Fym1u8EHWZVnzkIS0KPiBqpanA1wN80fW2TloQtRJuZb27rvQdUbdLfVpXTO+JaHi3qCHtPfetLIrlkoknO6KgKuAZ2ZfRswTmp/HDEWrmjTYTLynU7LPXKXdobyVsmU9DnyjLPr/v15LLmvizhEwKn2PO2lbbGsQ3OaAYncAJeKS7ljoJAsiqbv+MSsRqZX4JoUoZ8iBf2Sosy+KL4JHjeZE3kcB5AUuijy+OLBDEN/6aq4Jszbtk1AYFDiO0hbna195F4m/Al1LqCZ0tFAIZsjYQlTst78+8efkLPTUGXlhLlJY57sTag+Fr0BZ+h5c8IYwsFOlLMW/qUnflsCMLiVom2fTdXIDC7fr15Q99+KpDNFbRI26f5CvMlvM/p1c94n+RwPCfbMCzcyh9O3JnhMxhq2U7vz6rpXs++TJpJ+h6wip0NPVkejPNStg9fHSIHr2JVzXaEmMr1iT4+4U=
