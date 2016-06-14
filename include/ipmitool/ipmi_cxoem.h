@@ -28,7 +28,7 @@
 #include <ipmitool/ipmi.h>
 #include <ipmitool/ipmi_sdr.h>
 
-#define CX_VERSION				"-cx9"
+#define CX_VERSION				"-cx10"
 #define IPMI_NETFN_OEM_SS		0x3e
 
 /*
@@ -133,6 +133,7 @@
 #define IPMI_CMD_OEM_FABRIC_PARAMETER_MACLINK				0x39
 #define IPMI_CMD_OEM_FABRIC_PARAMETER_MGMT_MODE				0x3A
 #define IPMI_CMD_OEM_FABRIC_PARAMETER_MGMT_VIEW				0x3B
+#define IPMI_CMD_OEM_FABRIC_PARAMETER_MASTER				0x3C
 
 #define IPMI_CMD_OEM_FABRIC_SPECIFIER_NODE          0x40
 #define IPMI_CMD_OEM_FABRIC_SPECIFIER_INTERFACE     0x41
