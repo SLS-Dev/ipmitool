@@ -10,7 +10,8 @@ script:
 before_deploy:
 - git config --global user.email "builds@travis-ci.com"
 - git config --global user.name "Travis CI"
-- export VERSION=`grep -r CX_VERSION include/ipmitool/ipmi_cxoem.h  | awk '{print $3}' | sed 's/["-]//g'`
+- export VERSION=`grep -r CX_VERSION include/ipmitool/ipmi_cxoem.h  | awk '{print
+  $3}' | sed 's/["-]//g'`
 - export GIT_TAG=$VERSION.$TRAVIS_BRANCH.Build$TRAVIS_BUILD_NUMBER
 - echo $GIT_TAG
 - git tag $GIT_TAG -f -a -m "Generated tag from TravisCI for build $TRAVIS_BUILD_NUMBER"
@@ -33,3 +34,6 @@ branches:
 env:
   global:
     secure: mHbvlFLHE2e4tYuSUPBrBxtnSk2CWec7rRYmxNbAgTCBz0jxJyfF7OFrxN8lVgPljjak1usslqAZONZjjh6rPDLm146RPkjmUg5uJZCeYF8m5Z8uCjGoPk8Ci+Q6qFTuS6xMngJsIs0sE58kA5FKZkKCw66FZs9QCINJqGyq0grj1qgaydSxtY9LJYnwIq7+dkVjYb/7nKrNinU4CE2Gz5Fym1u8EHWZVnzkIS0KPiBqpanA1wN80fW2TloQtRJuZb27rvQdUbdLfVpXTO+JaHi3qCHtPfetLIrlkoknO6KgKuAZ2ZfRswTmp/HDEWrmjTYTLynU7LPXKXdobyVsmU9DnyjLPr/v15LLmvizhEwKn2PO2lbbGsQ3OaAYncAJeKS7ljoJAsiqbv+MSsRqZX4JoUoZ8iBf2Sosy+KL4JHjeZE3kcB5AUuijy+OLBDEN/6aq4Jszbtk1AYFDiO0hbna195F4m/Al1LqCZ0tFAIZsjYQlTst78+8efkLPTUGXlhLlJY57sTag+Fr0BZ+h5c8IYwsFOlLMW/qUnflsCMLiVom2fTdXIDC7fr15Q99+KpDNFbRI26f5CvMlvM/p1c94n+RwPCfbMCzcyh9O3JnhMxhq2U7vz6rpXs++TJpJ+h6wip0NPVkejPNStg9fHSIHr2JVzXaEmMr1iT4+4U=
+notifications:
+  slack:
+    secure: apHxM+yKbAyV1eZOkLHEHmpZR/kviTTzKRZXgXsCsRYO2zaXwoDtiI31D8xd+2ufY8KzTqSyHXYCXgLM5+qxog16k9hjvQTe9DLUYNU7D/QuzD8drohHh0BevhmTa7i+mW7MgXzO5Iz/jelAzv/X1/HwHvP8C4w9wQo4RV0ik0BO3FNmQq9aGyr1X5vO8iFWJZWfO1CH+Zx0daumPvjrlm2Jog7iSUw9XaeHkdusx6nePDTLcb34ZuoOc9TsYwX5kMuz19OAIhtCvcY5wxBvMQEiGITzPB1WlIknZqQJQwDNvkz3Ud2brrALr2jLVvF+bfM/OiqnzUbw3TnGlw7E5Bhm5aoTKlkSzKP5801Q5DUckdjKUM9EW8ochGojLtn7zWQ/3dZTj1Pd0MT9Ua9PyRvJG44R9i2ZaFMxCP9mI6BBs6BSIyCytX8OaXYq1tV6xywYp/G8Cc/CMhJZoh8ZMc0AuIow5wUY1gshbBUlCc5xrgj2MXuNJZ2OxqvKl/KR5uI14OSbDqYCNnr1Kil+MI7P3zgMv/rhQ5qzHN4MdOyM0U1+ruwNxDbB6SRsLU7VahKvL1C0U/Q8VUm0xsvCmki/6UIWfHQVeckr9Ls3iUOXUpimgVfKIekjg8q8hZFUGtwN9w3SWTKIknku4XEK55NPNa6hhfW6f2Ytrp70T74=
